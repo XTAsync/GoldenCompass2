@@ -1,0 +1,2359 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Golden Compass — Navigate Your Wealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dark: #8B6914;
+  --deep-navy: #0A0E1A;
+  --navy: #111827;
+  --navy-mid: #1A2235;
+  --navy-light: #253047;
+  --teal: #2ABFBF;
+  --teal-dark: #1A8A8A;
+  --crimson: #C0392B;
+  --parchment: #F5E6C8;
+  --parchment-dark: #D4C4A0;
+  --text-primary: #F0E8D0;
+  --text-secondary: #A89878;
+  --text-muted: #6B7280;
+  --success: #27AE60;
+  --warning: #F39C12;
+  --danger: #E74C3C;
+  --border: rgba(201,168,76,0.2);
+  --card-bg: rgba(26,34,53,0.95);
+  --glass: rgba(201,168,76,0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: var(--deep-navy);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== MOBILE FRAME ===== */
+#app {
+  max-width: 430px;
+  height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background: var(--deep-navy);
+}
+
+/* Starfield bg */
+#app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(42,191,191,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(10,14,26,0.95) 0%, transparent 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1;
+}
+.screen.active { display: flex; }
+
+/* ===== STATUS BAR ===== */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.status-time { color: var(--text-primary); font-weight: 700; }
+.status-icons { display: flex; gap: 6px; }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  display: flex;
+  background: var(--navy-mid);
+  border-top: 1px solid var(--border);
+  padding: 8px 0 20px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.5px;
+  border: none;
+  background: none;
+  position: relative;
+}
+.nav-item.active { color: var(--gold); }
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 0 0 2px 2px;
+}
+.nav-icon { font-size: 20px; }
+
+/* ===== SCROLL CONTAINER ===== */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-content::-webkit-scrollbar { display: none; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 16px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  opacity: 0.4;
+}
+.card-gold {
+  background: linear-gradient(135deg, #1A160A 0%, #2A1F0A 50%, #1A160A 100%);
+  border-color: rgba(201,168,76,0.5);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.font-display { font-family: 'Cinzel Decorative', serif; }
+.font-mono { font-family: 'Space Mono', monospace; }
+h1 { font-family: 'Cinzel Decorative', serif; font-size: 22px; color: var(--gold-light); }
+h2 { font-family: 'Cinzel Decorative', serif; font-size: 16px; color: var(--gold); margin-bottom: 4px; }
+h3 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+
+.label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.value-large {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 28px;
+  color: var(--gold-light);
+  line-height: 1.2;
+}
+.value-medium {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+.tag {
+  display: inline-block;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.tag-teal {
+  background: rgba(42,191,191,0.1);
+  border-color: rgba(42,191,191,0.3);
+  color: var(--teal);
+}
+.tag-success {
+  background: rgba(39,174,96,0.1);
+  border-color: rgba(39,174,96,0.3);
+  color: var(--success);
+}
+.tag-danger {
+  background: rgba(231,76,60,0.1);
+  border-color: rgba(231,76,60,0.3);
+  color: var(--danger);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  color: var(--deep-navy);
+  box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+}
+.btn-gold:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(201,168,76,0.2); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.btn-outline:active { background: var(--glass); }
+.btn-teal {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  color: var(--deep-navy);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #922B21, var(--crimson));
+  color: white;
+}
+
+/* ===== INPUTS ===== */
+.input-group { margin-bottom: 16px; }
+.input-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+}
+.input {
+  width: 100%;
+  background: rgba(10,14,26,0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input:focus { border-color: var(--gold); }
+.input::placeholder { color: var(--text-muted); }
+select.input { cursor: pointer; }
+
+/* ===== DIVIDER ===== */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 16px 0;
+}
+
+/* ===== BADGE ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--crimson);
+  color: white;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 0 5px;
+}
+
+/* ===== COMPASS LOGO ===== */
+.compass-logo {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+.compass-spin {
+  animation: compassSpin 20s linear infinite;
+}
+@keyframes compassSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-gold {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ===== CHART BARS ===== */
+.chart-bar-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 80px;
+}
+.chart-bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--gold-dark), var(--gold));
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.chart-bar:hover { filter: brightness(1.2); }
+.chart-bar.teal { background: linear-gradient(to top, var(--teal-dark), var(--teal)); }
+
+/* ===== PROGRESS ===== */
+.progress-bar {
+  height: 6px;
+  background: rgba(201,168,76,0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* ===== TOGGLE ===== */
+.toggle {
+  width: 44px;
+  height: 24px;
+  background: var(--navy-light);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--gold); border-color: var(--gold); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: left 0.2s;
+}
+.toggle.on::after { left: 22px; }
+
+/* ===== SKELETON LOADER ===== */
+.skeleton {
+  background: linear-gradient(90deg, var(--navy-light) 25%, var(--navy-mid) 50%, var(--navy-light) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--navy-mid);
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 430px;
+  padding: 20px;
+  animation: slideUp 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+/* ===== TOAST ===== */
+#toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy-mid);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--gold);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 90%;
+  text-align: center;
+}
+#toast.show { opacity: 1; }
+
+/* ===== SPLASH SCREEN ===== */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: var(--deep-navy);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.8s ease;
+}
+#splash.hidden { opacity: 0; pointer-events: none; }
+.splash-compass {
+  width: 120px;
+  height: 120px;
+  animation: compassSpin 8s linear infinite;
+}
+.splash-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 28px;
+  color: var(--gold-light);
+  text-align: center;
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+.splash-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+}
+
+/* ===== SCREEN-SPECIFIC ===== */
+
+/* AUTH */
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(201,168,76,0.15) 0%, transparent 60%);
+}
+.auth-header {
+  padding: 60px 24px 30px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.auth-form {
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+.auth-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+}
+.auth-tabs {
+  display: flex;
+  background: rgba(10,14,26,0.6);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 10px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.auth-tab.active {
+  background: var(--gold);
+  color: var(--deep-navy);
+  font-weight: 700;
+}
+
+/* HOME */
+.home-header {
+  padding: 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 16px;
+  color: var(--deep-navy);
+}
+.portfolio-card {
+  background: linear-gradient(135deg, #0F1520 0%, #1A2235 50%, #0D1018 100%);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin: 0 16px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.portfolio-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 60px;
+  background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+}
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0 16px 12px;
+}
+.quick-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-btn:active { transform: scale(0.97); background: var(--navy-light); }
+.quick-btn-icon { font-size: 24px; }
+.quick-btn-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* POOLS */
+.pool-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 0 16px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.pool-card:active { transform: scale(0.99); }
+.pool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  border-radius: 0 16px 0 80px;
+  background: var(--glass);
+}
+
+/* TRANSACTIONS */
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.tx-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.tx-in { background: rgba(39,174,96,0.15); }
+.tx-out { background: rgba(231,76,60,0.15); }
+
+/* AI NAVIGATOR */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-container::-webkit-scrollbar { display: none; }
+.message {
+  max-width: 82%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  animation: slideUp 0.2s ease;
+}
+.message.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--deep-navy);
+  border-radius: 16px 16px 4px 16px;
+  font-family: 'Cormorant Garamond', serif;
+}
+.message.ai {
+  align-self: flex-start;
+  background: var(--navy-mid);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px 16px 16px 16px;
+}
+.message.ai .ai-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.chat-input-area {
+  padding: 12px 16px 8px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.chat-input {
+  flex: 1;
+  background: rgba(10,14,26,0.8);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  color: var(--text-primary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  outline: none;
+}
+.chat-input:focus { border-color: var(--gold); }
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.send-btn:active { transform: scale(0.95); }
+.thinking {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 0;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 3px;
+  background: var(--gold);
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBounce {
+  0%,80%,100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* KYC */
+.step-indicator {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+.step-dot {
+  height: 4px;
+  border-radius: 2px;
+  flex: 1;
+  background: var(--navy-light);
+  transition: background 0.3s;
+}
+.step-dot.done { background: var(--gold); }
+.step-dot.active { background: var(--gold-light); }
+
+/* ADMIN */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0 16px 12px;
+}
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* SETTINGS ROW */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  cursor: pointer;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-info { flex: 1; }
+.settings-title { font-size: 15px; color: var(--text-primary); }
+.settings-desc { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.settings-arrow { color: var(--text-muted); font-size: 18px; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <svg class="splash-compass" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="56" fill="none" stroke="#C9A84C" stroke-width="2" opacity="0.5"/>
+    <circle cx="60" cy="60" r="48" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.3"/>
+    <circle cx="60" cy="60" r="3" fill="#F0D080"/>
+    <!-- Compass points -->
+    <path d="M60 8 L65 55 L60 58 L55 55 Z" fill="#F0D080"/>
+    <path d="M60 112 L65 65 L60 62 L55 65 Z" fill="#6B7280"/>
+    <path d="M8 60 L55 65 L58 60 L55 55 Z" fill="#6B7280"/>
+    <path d="M112 60 L65 65 L62 60 L65 55 Z" fill="#6B7280"/>
+    <!-- Decorative ticks -->
+    <line x1="60" y1="4" x2="60" y2="14" stroke="#C9A84C" stroke-width="2"/>
+    <line x1="60" y1="106" x2="60" y2="116" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="4" y1="60" x2="14" y2="60" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="106" y1="60" x2="116" y2="60" stroke="#C9A84C" stroke-width="1"/>
+    <text x="60" y="26" text-anchor="middle" font-family="Cinzel Decorative,serif" font-size="10" fill="#F0D080">N</text>
+    <text x="60" y="102" text-anchor="middle" font-family="Cinzel Decorative,serif" font-size="8" fill="#6B7280">S</text>
+    <text x="20" y="64" text-anchor="middle" font-family="Cinzel Decorative,serif" font-size="8" fill="#6B7280">W</text>
+    <text x="100" y="64" text-anchor="middle" font-family="Cinzel Decorative,serif" font-size="8" fill="#6B7280">E</text>
+  </svg>
+  <div class="splash-title">Golden Compass</div>
+  <div class="splash-tagline">Navigate Your Wealth</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+<!-- ============================
+     SCREEN: AUTH
+============================= -->
+<div class="screen active" id="screen-auth">
+  <div class="auth-bg"></div>
+  <div class="scroll-content" style="padding-bottom: 40px;">
+    <div class="auth-header">
+      <svg class="auth-logo compass-spin" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="40" cy="40" r="3" fill="#F0D080"/>
+        <path d="M40 5 L44 36 L40 39 L36 36 Z" fill="#F0D080"/>
+        <path d="M40 75 L44 44 L40 41 L36 44 Z" fill="#6B7280"/>
+        <path d="M5 40 L36 44 L39 40 L36 36 Z" fill="#6B7280"/>
+        <path d="M75 40 L44 44 L41 40 L44 36 Z" fill="#6B7280"/>
+        <text x="40" y="18" text-anchor="middle" font-family="Cinzel Decorative,serif" font-size="7" fill="#F0D080">N</text>
+      </svg>
+      <h1 style="margin-bottom: 8px;">Golden Compass</h1>
+      <p style="color:var(--text-secondary); font-style:italic; font-size:15px;">Navigate Your Wealth</p>
+    </div>
+    <div class="auth-form">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form">
+        <div class="input-group">
+          <label class="input-label">Email Address</label>
+          <input class="input" type="email" id="login-email" placeholder="captain@compass.co.ke" value="demo@compass.co.ke">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input class="input" type="password" id="login-password" placeholder="••••••••" value="password123">
+        </div>
+        <button class="btn btn-gold" style="margin-bottom:12px;" onclick="doLogin()">⚓ Set Sail</button>
+        <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:8px;">
+          <span onclick="switchAuthTab('admin')" style="cursor:pointer; color:var(--gold);">Admin Login →</span>
+        </p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <input class="input" type="text" id="reg-name" placeholder="James Mwangi">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Email Address</label>
+          <input class="input" type="email" id="reg-email" placeholder="james@example.com">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Phone (M-Pesa)</label>
+          <input class="input" type="tel" id="reg-phone" placeholder="+254 700 000 000">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input class="input" type="password" id="reg-password" placeholder="Min. 8 characters">
+        </div>
+        <button class="btn btn-gold" style="margin-bottom:12px;" onclick="doRegister()">⚓ Join the Crew</button>
+      </div>
+
+      <!-- ADMIN FORM -->
+      <div id="admin-form" style="display:none;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <span class="tag">Admin Access</span>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Admin Email</label>
+          <input class="input" type="email" placeholder="admin@compass.co.ke" value="admin@compass.co.ke">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input class="input" type="password" placeholder="••••••••" value="admin123">
+        </div>
+        <button class="btn btn-gold" style="margin-bottom:12px;" onclick="doAdminLogin()">🔐 Admin Entry</button>
+        <p style="text-align:center; font-size:13px; color:var(--text-muted);">
+          <span onclick="switchAuthTab('login')" style="cursor:pointer; color:var(--gold);">← Back to Login</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: HOME
+============================= -->
+<div class="screen" id="screen-home">
+  <div class="status-bar">
+    <span class="status-time" id="clock">9:41</span>
+    <div class="status-icons">
+      <span>📶</span><span>🔋</span>
+    </div>
+  </div>
+
+  <div class="scroll-content">
+    <!-- Header -->
+    <div class="home-header">
+      <div>
+        <div class="label">Welcome back, Captain</div>
+        <h2 id="user-name-display" style="font-size:20px; font-family:'Cinzel Decorative',serif; color:var(--gold-light);">James M.</h2>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div style="position:relative; cursor:pointer;" onclick="showScreen('screen-notifications')">
+          <span style="font-size:22px;">🔔</span>
+          <span class="badge" style="position:absolute; top:-4px; right:-4px; font-size:8px;">3</span>
+        </div>
+        <div class="avatar" id="user-avatar">JM</div>
+      </div>
+    </div>
+
+    <!-- Portfolio Overview Card -->
+    <div class="portfolio-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+        <div>
+          <div class="label">Total Portfolio Value</div>
+          <div class="value-large" id="portfolio-value">KSh 124,850</div>
+        </div>
+        <span class="tag-success tag">+12.4% YTD</span>
+      </div>
+      <div class="divider" style="margin:12px 0;"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+        <div>
+          <div class="label" style="font-size:9px;">Invested</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px; color:var(--text-primary);">111,200</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Returns</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px; color:var(--success);">+13,650</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Units</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px; color:var(--teal);">1,248.5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini Chart -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">NAV Performance</h2>
+        <span class="tag-teal tag">7 Days</span>
+      </div>
+      <div class="chart-bar-container" id="home-chart"></div>
+      <div style="display:flex; justify-content:space-between; margin-top:6px;">
+        <span class="label" style="font-size:9px;">Mon</span>
+        <span class="label" style="font-size:9px;">Tue</span>
+        <span class="label" style="font-size:9px;">Wed</span>
+        <span class="label" style="font-size:9px;">Thu</span>
+        <span class="label" style="font-size:9px;">Fri</span>
+        <span class="label" style="font-size:9px;">Sat</span>
+        <span class="label" style="font-size:9px;">Sun</span>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="quick-btn" onclick="openModal('deposit-modal')">
+        <div class="quick-btn-icon">💰</div>
+        <div class="quick-btn-label">Deposit</div>
+      </div>
+      <div class="quick-btn" onclick="openModal('withdraw-modal')">
+        <div class="quick-btn-icon">📤</div>
+        <div class="quick-btn-label">Withdraw</div>
+      </div>
+      <div class="quick-btn" onclick="showNavScreen('pools')">
+        <div class="quick-btn-icon">⚓</div>
+        <div class="quick-btn-label">Pools</div>
+      </div>
+      <div class="quick-btn" onclick="showNavScreen('ai')">
+        <div class="quick-btn-icon">🧭</div>
+        <div class="quick-btn-label">AI Navigator</div>
+      </div>
+    </div>
+
+    <!-- Active Positions -->
+    <div style="padding: 0 16px 8px; display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size:16px;">Active Positions</h3>
+      <span style="color:var(--gold); font-size:13px; cursor:pointer;" onclick="showNavScreen('pools')">View all →</span>
+    </div>
+
+    <div class="card" style="padding: 12px 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div>
+          <div style="font-size:15px; font-weight:600;">Bahari Growth Fund</div>
+          <div class="label" style="font-size:9px; margin-top:2px;">752.3 units @ KSh 101.28</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:var(--success); font-family:'Space Mono',monospace; font-size:14px;">+8.9%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">76,192</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px;">
+        <span class="label" style="font-size:9px;">62% of portfolio</span>
+        <span class="tag" style="font-size:9px;">Growth</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 12px 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div>
+          <div style="font-size:15px; font-weight:600;">Pwani Stable Fund</div>
+          <div class="label" style="font-size:9px; margin-top:2px;">496.2 units @ KSh 98.12</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:var(--success); font-family:'Space Mono',monospace; font-size:14px;">+4.2%</div>
+          <div style="font-size:13px; color:var(--text-secondary);">48,658</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:38%; background: linear-gradient(90deg, var(--teal-dark), var(--teal));"></div></div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px;">
+        <span class="label" style="font-size:9px;">38% of portfolio</span>
+        <span class="tag-teal tag">Stable</span>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div style="padding: 8px 16px 8px; display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size:16px;">Recent Transactions</h3>
+      <span style="color:var(--gold); font-size:13px; cursor:pointer;" onclick="showNavScreen('transactions')">See all →</span>
+    </div>
+    <div class="card" style="padding: 8px 20px;">
+      <div class="tx-item">
+        <div class="tx-icon tx-in">💚</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Deposit via M-Pesa</div>
+          <div class="label" style="font-size:9px;">PBK8234JH · 2 days ago</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace; color:var(--success);">+5,000</div>
+      </div>
+      <div class="tx-item">
+        <div class="tx-icon tx-in">💚</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Pool Investment</div>
+          <div class="label" style="font-size:9px;">Bahari Growth · 3 days ago</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace; color:var(--success);">+10,000</div>
+      </div>
+      <div class="tx-item" style="border-bottom:none;">
+        <div class="tx-icon tx-out">🔴</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Withdrawal</div>
+          <div class="label" style="font-size:9px;">PBK7112KA · 1 week ago</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace; color:var(--danger);">-2,500</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav" id="bottom-nav-home">
+    <button class="nav-item active" onclick="showNavScreen('home')"><span class="nav-icon">🧭</span>Home</button>
+    <button class="nav-item" onclick="showNavScreen('pools')"><span class="nav-icon">⚓</span>Pools</button>
+    <button class="nav-item" onclick="showNavScreen('ai')"><span class="nav-icon">🤖</span>Navigator</button>
+    <button class="nav-item" onclick="showNavScreen('transactions')"><span class="nav-icon">📜</span>History</button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><span class="nav-icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: POOLS
+============================= -->
+<div class="screen" id="screen-pools">
+  <div class="status-bar"><span class="status-time" id="clock2">9:41</span><div class="status-icons"><span>📶</span><span>🔋</span></div></div>
+  <div style="padding: 8px 16px 16px; display:flex; align-items:center; gap:12px;">
+    <h1 style="font-size:18px; flex:1;">Investment Pools</h1>
+    <span class="tag-teal tag">3 Active</span>
+  </div>
+
+  <!-- NAV Summary Bar -->
+  <div style="margin: 0 16px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; gap:16px;">
+    <div style="flex:1; text-align:center;">
+      <div class="label" style="font-size:9px;">Daily NAV Update</div>
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--gold); margin-top:2px;">6:00 AM EAT</div>
+    </div>
+    <div style="width:1px; background:var(--border);"></div>
+    <div style="flex:1; text-align:center;">
+      <div class="label" style="font-size:9px;">Avg. Yield (30d)</div>
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--success); margin-top:2px;">+9.8% p.a.</div>
+    </div>
+    <div style="width:1px; background:var(--border);"></div>
+    <div style="flex:1; text-align:center;">
+      <div class="label" style="font-size:9px;">Min. Investment</div>
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--teal); margin-top:2px;">KSh 1,000</div>
+    </div>
+  </div>
+
+  <div class="scroll-content" style="padding-top:0;">
+    <!-- Pool 1 -->
+    <div class="pool-card" onclick="openModal('pool-detail-modal', 'bahari')">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <span style="font-size:22px;">🌊</span>
+            <h3>Bahari Growth Fund</h3>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <span class="tag">Growth</span>
+            <span class="tag-success tag">Active</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Cinzel Decorative',serif; font-size:16px; color:var(--gold-light);">+12.4%</div>
+          <div class="label" style="font-size:9px;">YTD Return</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+        <div>
+          <div class="label" style="font-size:9px;">NAV/Unit</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">101.28</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Pool Size</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">4.8M</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Investors</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">1,204</div>
+        </div>
+      </div>
+      <button class="btn btn-gold" style="padding:10px;" onclick="event.stopPropagation(); openModal('invest-modal','bahari')">Invest Now</button>
+    </div>
+
+    <!-- Pool 2 -->
+    <div class="pool-card" onclick="openModal('pool-detail-modal', 'pwani')">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <span style="font-size:22px;">⚓</span>
+            <h3>Pwani Stable Fund</h3>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <span class="tag-teal tag">Stable</span>
+            <span class="tag-success tag">Active</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Cinzel Decorative',serif; font-size:16px; color:var(--teal);">+6.2%</div>
+          <div class="label" style="font-size:9px;">YTD Return</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+        <div>
+          <div class="label" style="font-size:9px;">NAV/Unit</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">98.12</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Pool Size</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">2.1M</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Investors</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">784</div>
+        </div>
+      </div>
+      <button class="btn btn-teal" style="padding:10px; color:white;" onclick="event.stopPropagation(); openModal('invest-modal','pwani')">Invest Now</button>
+    </div>
+
+    <!-- Pool 3 -->
+    <div class="pool-card" onclick="openModal('pool-detail-modal', 'kilima')">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <span style="font-size:22px;">⛵</span>
+            <h3>Kilima Balanced Fund</h3>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <span class="tag">Balanced</span>
+            <span class="tag-success tag">Active</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Cinzel Decorative',serif; font-size:16px; color:var(--gold-light);">+9.1%</div>
+          <div class="label" style="font-size:9px;">YTD Return</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+        <div>
+          <div class="label" style="font-size:9px;">NAV/Unit</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">104.55</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Pool Size</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">6.3M</div>
+        </div>
+        <div>
+          <div class="label" style="font-size:9px;">Investors</div>
+          <div style="font-family:'Space Mono',monospace; font-size:13px;">2,441</div>
+        </div>
+      </div>
+      <button class="btn btn-gold" style="padding:10px;" onclick="event.stopPropagation(); openModal('invest-modal','kilima')">Invest Now</button>
+    </div>
+
+    <!-- NAV History Chart -->
+    <div class="card">
+      <div style="margin-bottom:12px;">
+        <h2>Pool NAV History</h2>
+        <div class="label" style="font-size:10px;">Last 7 trading days</div>
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <span class="tag" style="cursor:pointer;" onclick="switchPoolChart('bahari')">Bahari</span>
+        <span class="tag-teal tag" style="cursor:pointer;" onclick="switchPoolChart('pwani')">Pwani</span>
+        <span class="tag" style="cursor:pointer;" onclick="switchPoolChart('kilima')">Kilima</span>
+      </div>
+      <div class="chart-bar-container" id="pool-chart"></div>
+      <div style="display:flex; justify-content:space-between; margin-top:6px;">
+        <span class="label" style="font-size:9px;">Day 1</span>
+        <span class="label" style="font-size:9px;">Day 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('home')"><span class="nav-icon">🧭</span>Home</button>
+    <button class="nav-item active" onclick="showNavScreen('pools')"><span class="nav-icon">⚓</span>Pools</button>
+    <button class="nav-item" onclick="showNavScreen('ai')"><span class="nav-icon">🤖</span>Navigator</button>
+    <button class="nav-item" onclick="showNavScreen('transactions')"><span class="nav-icon">📜</span>History</button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><span class="nav-icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: AI NAVIGATOR
+============================= -->
+<div class="screen" id="screen-ai" style="flex-direction:column;">
+  <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><span>📶</span><span>🔋</span></div></div>
+  <div style="padding: 8px 16px 12px; border-bottom:1px solid var(--border); flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="width:36px; height:36px; border-radius:18px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; font-size:18px;">🧭</div>
+      <div>
+        <h2 style="margin:0; font-size:16px;">AI Navigator</h2>
+        <div class="label" style="font-size:9px; color:var(--teal);">● Online · Powered by AI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-container" id="chat-messages">
+    <div class="message ai">
+      <div class="ai-label">🧭 Navigator</div>
+      Ahoy, Captain! I'm your Golden Compass AI Navigator. I can help you with portfolio analysis, investment guidance, risk assessment, and market education. How can I guide your wealth voyage today?
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <button class="btn btn-outline" style="width:auto; padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px; border-radius:20px;" onclick="sendQuickMsg('How is my portfolio performing?')">Portfolio check</button>
+      <button class="btn btn-outline" style="width:auto; padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px; border-radius:20px;" onclick="sendQuickMsg('Which fund should I invest in?')">Best fund for me</button>
+      <button class="btn btn-outline" style="width:auto; padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px; border-radius:20px;" onclick="sendQuickMsg('Explain NAV calculation')">How NAV works</button>
+      <button class="btn btn-outline" style="width:auto; padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px; border-radius:20px;" onclick="sendQuickMsg('What are the risks?')">Risk assessment</button>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <input class="chat-input" id="chat-input" placeholder="Ask your Navigator..." onkeydown="if(event.key==='Enter') sendChat()">
+    <button class="send-btn" onclick="sendChat()">⬆</button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('home')"><span class="nav-icon">🧭</span>Home</button>
+    <button class="nav-item" onclick="showNavScreen('pools')"><span class="nav-icon">⚓</span>Pools</button>
+    <button class="nav-item active" onclick="showNavScreen('ai')"><span class="nav-icon">🤖</span>Navigator</button>
+    <button class="nav-item" onclick="showNavScreen('transactions')"><span class="nav-icon">📜</span>History</button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><span class="nav-icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: TRANSACTIONS
+============================= -->
+<div class="screen" id="screen-transactions">
+  <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><span>📶</span><span>🔋</span></div></div>
+  <div style="padding: 8px 16px 12px;">
+    <h1 style="font-size:18px; margin-bottom:8px;">Transaction History</h1>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-gold" style="width:auto; padding:8px 16px; font-size:10px;" onclick="filterTx('all')">All</button>
+      <button class="btn btn-outline" style="width:auto; padding:8px 16px; font-size:10px;" onclick="filterTx('deposit')">Deposits</button>
+      <button class="btn btn-outline" style="width:auto; padding:8px 16px; font-size:10px;" onclick="filterTx('withdrawal')">Withdrawals</button>
+    </div>
+  </div>
+
+  <div class="scroll-content" style="padding-top:0;">
+    <div class="card" style="padding:8px 20px;" id="tx-list">
+      <!-- Populated by JS -->
+    </div>
+    <div style="text-align:center; padding:16px;">
+      <div class="label" style="font-size:10px; margin-bottom:4px;">🔒 All transactions immutably logged</div>
+      <div class="label" style="font-size:9px; color:var(--text-muted);">CMA & CBK Compliant Architecture</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('home')"><span class="nav-icon">🧭</span>Home</button>
+    <button class="nav-item" onclick="showNavScreen('pools')"><span class="nav-icon">⚓</span>Pools</button>
+    <button class="nav-item" onclick="showNavScreen('ai')"><span class="nav-icon">🤖</span>Navigator</button>
+    <button class="nav-item active" onclick="showNavScreen('transactions')"><span class="nav-icon">📜</span>History</button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><span class="nav-icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: PROFILE
+============================= -->
+<div class="screen" id="screen-profile">
+  <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><span>📶</span><span>🔋</span></div></div>
+  <div class="scroll-content">
+    <!-- Profile Header -->
+    <div style="padding:16px; text-align:center; margin-bottom:-8px;">
+      <div style="width:72px; height:72px; border-radius:36px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Cinzel Decorative',serif; font-size:28px; color:var(--deep-navy); margin:0 auto 12px; border:3px solid var(--gold);" id="big-avatar">JM</div>
+      <h2 style="font-size:22px; margin-bottom:4px;" id="profile-name">James Mwangi</h2>
+      <div class="label">demo@compass.co.ke</div>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+        <span class="tag-success tag">KYC Verified</span>
+        <span class="tag">Investor</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid" style="margin-top:12px;">
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Total Invested</div>
+        <div style="font-family:'Space Mono',monospace; font-size:16px; color:var(--gold-light);">111,200</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">KES</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Total Returns</div>
+        <div style="font-family:'Space Mono',monospace; font-size:16px; color:var(--success);">+13,650</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">KES</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Risk Level</div>
+        <div style="font-family:'Cinzel Decorative',serif; font-size:14px; color:var(--gold);">Moderate</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Profile</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Member Since</div>
+        <div style="font-family:'Space Mono',monospace; font-size:14px; color:var(--text-primary);">Jan 2025</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Crew Date</div>
+      </div>
+    </div>
+
+    <!-- KYC -->
+    <div class="card">
+      <h2 style="margin-bottom:12px;">KYC Verification</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px;">✅</span><span>National ID Verified</span></div>
+        <span class="tag-success tag">Done</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px;">✅</span><span>Phone Verified</span></div>
+        <span class="tag-success tag">Done</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px;">✅</span><span>Source of Funds</span></div>
+        <span class="tag-success tag">Done</span>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="card">
+      <h2 style="margin-bottom:12px;">Settings</h2>
+      <div class="settings-row" onclick="toggleNotif()">
+        <div class="settings-info">
+          <div class="settings-title">Push Notifications</div>
+          <div class="settings-desc">NAV updates & alerts</div>
+        </div>
+        <div class="toggle on" id="notif-toggle"></div>
+      </div>
+      <div class="settings-row" onclick="toggle2FA()">
+        <div class="settings-info">
+          <div class="settings-title">Two-Factor Auth</div>
+          <div class="settings-desc">Extra account security</div>
+        </div>
+        <div class="toggle" id="twofa-toggle"></div>
+      </div>
+      <div class="settings-row" onclick="openModal('risk-modal')">
+        <div class="settings-info">
+          <div class="settings-title">Risk Disclosure</div>
+          <div class="settings-desc">View accepted disclosures</div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+      <div class="settings-row" onclick="showScreen('screen-kyc')">
+        <div class="settings-info">
+          <div class="settings-title">Update KYC</div>
+          <div class="settings-desc">Keep your profile current</div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+    </div>
+
+    <div style="padding: 0 16px 8px;">
+      <button class="btn btn-danger" onclick="doLogout()">⚓ Leave the Ship</button>
+    </div>
+    <div style="text-align:center; padding:16px 0;">
+      <div class="label" style="font-size:9px; color:var(--text-muted);">Golden Compass v1.0 MVP · CMA Licensed Structure · CBK Compliant</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('home')"><span class="nav-icon">🧭</span>Home</button>
+    <button class="nav-item" onclick="showNavScreen('pools')"><span class="nav-icon">⚓</span>Pools</button>
+    <button class="nav-item" onclick="showNavScreen('ai')"><span class="nav-icon">🤖</span>Navigator</button>
+    <button class="nav-item" onclick="showNavScreen('transactions')"><span class="nav-icon">📜</span>History</button>
+    <button class="nav-item active" onclick="showNavScreen('profile')"><span class="nav-icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: KYC
+============================= -->
+<div class="screen" id="screen-kyc">
+  <div style="padding: 20px 16px 0;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+      <button onclick="goBack()" style="background:none; border:none; color:var(--gold); font-size:22px; cursor:pointer;">←</button>
+      <h1 style="font-size:18px;">KYC Verification</h1>
+    </div>
+    <div class="step-indicator" id="kyc-steps">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+  </div>
+
+  <div class="scroll-content" style="padding-top:0;">
+    <!-- Step 1 -->
+    <div id="kyc-step-1" style="padding:0 16px;">
+      <div class="card" style="margin:0 0 12px;">
+        <h2 style="margin-bottom:4px;">Personal Information</h2>
+        <div class="label">Step 1 of 3 — Identity Details</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">National ID Number</label>
+        <input class="input" type="text" placeholder="e.g. 12345678">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Date of Birth</label>
+        <input class="input" type="date">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Residential Address</label>
+        <input class="input" type="text" placeholder="e.g. Westlands, Nairobi">
+      </div>
+      <button class="btn btn-gold" onclick="kycNext(2)">Continue →</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div id="kyc-step-2" style="display:none; padding:0 16px;">
+      <div class="card" style="margin:0 0 12px;">
+        <h2 style="margin-bottom:4px;">Source of Funds</h2>
+        <div class="label">Step 2 of 3 — AML Compliance</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Employment Status</label>
+        <select class="input">
+          <option>Employed</option><option>Self-Employed</option><option>Business Owner</option><option>Retired</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Source of Investment Funds</label>
+        <select class="input">
+          <option>Salary / Employment</option><option>Business Income</option><option>Savings</option><option>Investment Returns</option><option>Gift / Inheritance</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Estimated Annual Income (KES)</label>
+        <select class="input">
+          <option>Below 500,000</option><option>500K–1M</option><option>1M–3M</option><option>Above 3M</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="kycNext(3)">Continue →</button>
+    </div>
+
+    <!-- Step 3 -->
+    <div id="kyc-step-3" style="display:none; padding:0 16px;">
+      <div class="card" style="margin:0 0 12px;">
+        <h2 style="margin-bottom:4px;">Risk Disclosure</h2>
+        <div class="label">Step 3 of 3 — Consent & Agreement</div>
+      </div>
+      <div class="card" style="font-size:13px; line-height:1.7; color:var(--text-secondary); margin:0 0 12px;">
+        <strong style="color:var(--gold);">⚠️ Important Risk Disclosure</strong><br><br>
+        Investments in Golden Compass pools involve risk. Past performance does not guarantee future returns. Net Asset Values (NAV) may go up or down. You may receive less than your invested amount.<br><br>
+        Golden Compass operates within a CMA-licensed structure and CBK-compliant architecture. All funds are held in segregated custody accounts.
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 0; margin-bottom:12px; border:1px solid var(--border); border-radius:10px; padding:14px;">
+        <input type="checkbox" id="risk-consent" style="width:18px; height:18px; accent-color:var(--gold);">
+        <label for="risk-consent" style="font-size:14px; line-height:1.5; cursor:pointer;">I have read and understood the risk disclosure and consent to KYC verification.</label>
+      </div>
+      <button class="btn btn-gold" onclick="submitKYC()">✅ Submit KYC Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: ADMIN
+============================= -->
+<div class="screen" id="screen-admin">
+  <div class="status-bar"><span class="status-time">9:41</span><div class="status-icons"><span>📶</span><span>🔋</span></div></div>
+  <div style="padding:8px 16px 12px; display:flex; align-items:center; gap:10px;">
+    <span style="font-size:20px;">🔐</span>
+    <h1 style="font-size:18px; flex:1;">Admin Dashboard</h1>
+    <span class="tag-danger tag">Admin</span>
+  </div>
+
+  <div class="scroll-content" style="padding-top:0;">
+    <!-- Stats Grid -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Total AUM</div>
+        <div style="font-family:'Cinzel Decorative',serif; font-size:15px; color:var(--gold-light);">13.2M</div>
+        <div style="font-size:10px; color:var(--success); margin-top:2px;">↑ 8.4% this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Total Users</div>
+        <div style="font-family:'Cinzel Decorative',serif; font-size:15px; color:var(--teal);">4,429</div>
+        <div style="font-size:10px; color:var(--success); margin-top:2px;">↑ 124 new today</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Pending KYC</div>
+        <div style="font-family:'Cinzel Decorative',serif; font-size:15px; color:var(--warning);">47</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Review required</div>
+      </div>
+      <div class="stat-card">
+        <div class="label" style="font-size:9px; margin-bottom:4px;">Flagged Txns</div>
+        <div style="font-family:'Cinzel Decorative',serif; font-size:15px; color:var(--danger);">3</div>
+        <div style="font-size:10px; color:var(--danger); margin-top:2px;">AML Alert</div>
+      </div>
+    </div>
+
+    <!-- AUM Chart -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">AUM Growth</h2>
+        <span class="tag">Last 7 Days</span>
+      </div>
+      <div class="chart-bar-container" id="admin-chart"></div>
+      <div style="display:flex; justify-content:space-between; margin-top:6px;">
+        <span class="label" style="font-size:9px;">Day 1</span>
+        <span class="label" style="font-size:9px;">Day 7</span>
+      </div>
+    </div>
+
+    <!-- Pool Management -->
+    <div style="padding: 0 16px 8px; display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size:16px;">Pool Management</h3>
+      <button class="btn btn-gold" style="width:auto; padding:8px 14px; font-size:10px;" onclick="openModal('create-pool-modal')">+ New Pool</button>
+    </div>
+
+    <div class="card" style="padding:12px 20px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px; font-weight:600;">Bahari Growth Fund</div>
+          <div class="label" style="font-size:9px;">4,800 units · 1,204 investors</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span class="tag-success tag">Active</span>
+          <button style="background:none; border:none; color:var(--gold); cursor:pointer; font-size:16px;" onclick="openModal('nav-update-modal', 'bahari')">✏️</button>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:12px; color:var(--text-secondary);">
+        <span>NAV: 101.28</span>
+        <span>Total: 4.86M KES</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:12px 20px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px; font-weight:600;">Pwani Stable Fund</div>
+          <div class="label" style="font-size:9px;">2,100 units · 784 investors</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span class="tag-success tag">Active</span>
+          <button style="background:none; border:none; color:var(--gold); cursor:pointer; font-size:16px;" onclick="openModal('nav-update-modal', 'pwani')">✏️</button>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:12px; color:var(--text-secondary);">
+        <span>NAV: 98.12</span>
+        <span>Total: 2.06M KES</span>
+      </div>
+    </div>
+
+    <!-- KYC Queue -->
+    <div style="padding: 0 16px 8px;">
+      <h3 style="font-size:16px;">Pending KYC Reviews</h3>
+    </div>
+    <div class="card" style="padding:8px 20px;">
+      <div class="tx-item">
+        <div class="tx-icon" style="background:rgba(201,168,76,0.15);">👤</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Amina Hassan</div>
+          <div class="label" style="font-size:9px;">Submitted 2h ago · Low Risk</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button onclick="kycAction('approve')" style="background:var(--success); border:none; color:white; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;">✓</button>
+          <button onclick="kycAction('reject')" style="background:var(--danger); border:none; color:white; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;">✗</button>
+        </div>
+      </div>
+      <div class="tx-item" style="border-bottom:none;">
+        <div class="tx-icon" style="background:rgba(201,168,76,0.15);">👤</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">David Omondi</div>
+          <div class="label" style="font-size:9px;">Submitted 5h ago · Medium Risk</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button onclick="kycAction('approve')" style="background:var(--success); border:none; color:white; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;">✓</button>
+          <button onclick="kycAction('reject')" style="background:var(--danger); border:none; color:white; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;">✗</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AML -->
+    <div style="padding: 0 16px 8px;">
+      <h3 style="font-size:16px;">AML Flags</h3>
+    </div>
+    <div class="card" style="padding:12px 20px; border-color:rgba(231,76,60,0.4);">
+      <div style="display:flex; align-items:flex-start; gap:10px;">
+        <span style="font-size:22px;">⚠️</span>
+        <div>
+          <div style="font-size:14px; color:var(--danger); margin-bottom:4px;">Suspicious Transaction Flagged</div>
+          <div class="label" style="font-size:9px;">TXN #PBK9921XK · KES 950,000 · John Doe</div>
+          <div class="label" style="font-size:9px; margin-top:2px;">Exceeds 24h threshold — Review Required</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn btn-danger" style="padding:8px; font-size:10px;">Block Account</button>
+        <button class="btn btn-outline" style="padding:8px; font-size:10px;">Mark Safe</button>
+      </div>
+    </div>
+
+    <!-- Audit Logs -->
+    <div style="padding: 0 16px 8px;">
+      <h3 style="font-size:16px;">Audit Log</h3>
+    </div>
+    <div class="card" style="padding:8px 20px;">
+      <div id="audit-log-list"></div>
+    </div>
+
+    <div style="padding:16px;">
+      <button class="btn btn-danger" onclick="doLogout()">🔓 Admin Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     SCREEN: NOTIFICATIONS
+============================= -->
+<div class="screen" id="screen-notifications">
+  <div style="padding:16px 16px 0; display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+    <button onclick="goBack()" style="background:none; border:none; color:var(--gold); font-size:22px; cursor:pointer;">←</button>
+    <h1 style="font-size:18px;">Notifications</h1>
+  </div>
+  <div class="scroll-content" style="padding-top:0;">
+    <div class="card" style="padding:8px 20px;">
+      <div class="tx-item">
+        <div style="width:40px;height:40px;border-radius:20px;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📈</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">NAV Updated — Bahari Growth</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">New NAV: KSh 101.28/unit (+0.12%)</div>
+          <div class="label" style="font-size:9px; margin-top:4px;">Today, 6:00 AM</div>
+        </div>
+      </div>
+      <div class="tx-item">
+        <div style="width:40px;height:40px;border-radius:20px;background:rgba(39,174,96,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💰</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Deposit Confirmed</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">KSh 5,000 received via M-Pesa</div>
+          <div class="label" style="font-size:9px; margin-top:4px;">Yesterday, 3:22 PM</div>
+        </div>
+      </div>
+      <div class="tx-item" style="border-bottom:none;">
+        <div style="width:40px;height:40px;border-radius:20px;background:rgba(42,191,191,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧭</div>
+        <div style="flex:1">
+          <div style="font-size:14px;">Monthly Report Ready</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Your January portfolio report is available</div>
+          <div class="label" style="font-size:9px; margin-top:4px;">Feb 1, 8:00 AM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     MODALS
+============================= -->
+
+<!-- DEPOSIT MODAL -->
+<div class="modal-overlay" id="deposit-modal" onclick="closeModalOnBg(event,'deposit-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="margin-bottom:4px;">💰 Deposit via M-Pesa</h2>
+    <p style="color:var(--text-secondary); font-size:14px; margin-bottom:20px;">Funds appear within 30 seconds via STK Push</p>
+    <div class="input-group">
+      <label class="input-label">M-Pesa Phone Number</label>
+      <input class="input" type="tel" value="+254 700 000 000" id="deposit-phone">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Amount (KES)</label>
+      <input class="input" type="number" placeholder="Min. 1,000" id="deposit-amount">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Select Pool</label>
+      <select class="input" id="deposit-pool">
+        <option value="wallet">Wallet (Hold Funds)</option>
+        <option value="bahari">Bahari Growth Fund</option>
+        <option value="pwani">Pwani Stable Fund</option>
+        <option value="kilima">Kilima Balanced Fund</option>
+      </select>
+    </div>
+    <div style="background:rgba(42,191,191,0.08); border:1px solid rgba(42,191,191,0.2); border-radius:10px; padding:12px; margin-bottom:16px; font-size:13px; color:var(--teal);">
+      📱 An STK Push will be sent to your M-Pesa number. Enter your PIN to confirm.
+    </div>
+    <button class="btn btn-gold" onclick="processDeposit()">🔐 Send STK Push</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('deposit-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="withdraw-modal" onclick="closeModalOnBg(event,'withdraw-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="margin-bottom:4px;">📤 Withdraw to M-Pesa</h2>
+    <p style="color:var(--text-secondary); font-size:14px; margin-bottom:20px;">Funds sent to your registered M-Pesa</p>
+    <div class="input-group">
+      <label class="input-label">From Pool</label>
+      <select class="input" id="withdraw-pool">
+        <option value="bahari">Bahari Growth Fund (76,192 available)</option>
+        <option value="pwani">Pwani Stable Fund (48,658 available)</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Amount (KES)</label>
+      <input class="input" type="number" placeholder="Min. 1,000" id="withdraw-amount">
+    </div>
+    <div style="background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); border-radius:10px; padding:12px; margin-bottom:16px; font-size:13px; color:var(--text-secondary);">
+      ⏱️ Processing takes 1–3 business days. A 2% exit fee applies to withdrawals within 30 days.
+    </div>
+    <button class="btn btn-gold" onclick="processWithdrawal()">📤 Request Withdrawal</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('withdraw-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- INVEST MODAL -->
+<div class="modal-overlay" id="invest-modal" onclick="closeModalOnBg(event,'invest-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 id="invest-modal-title" style="margin-bottom:16px;">⚓ Invest in Pool</h2>
+    <div class="input-group">
+      <label class="input-label">Investment Amount (KES)</label>
+      <input class="input" type="number" placeholder="Min. 1,000" id="invest-amount">
+    </div>
+    <div id="invest-preview" style="background:var(--glass); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:16px; display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span class="label" style="font-size:10px;">Units to receive</span>
+        <span style="font-family:'Space Mono',monospace; font-size:14px; color:var(--gold);" id="units-preview">—</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span class="label" style="font-size:10px;">Current NAV/Unit</span>
+        <span style="font-family:'Space Mono',monospace; font-size:14px; color:var(--text-secondary);" id="nav-preview">—</span>
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="processInvestment()">✅ Confirm Investment</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('invest-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- POOL DETAIL MODAL -->
+<div class="modal-overlay" id="pool-detail-modal" onclick="closeModalOnBg(event,'pool-detail-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="pool-detail-content"></div>
+    <button class="btn btn-gold" onclick="investFromDetail()" style="margin-top:8px;">Invest Now</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('pool-detail-modal')">Close</button>
+  </div>
+</div>
+
+<!-- NAV UPDATE MODAL (Admin) -->
+<div class="modal-overlay" id="nav-update-modal" onclick="closeModalOnBg(event,'nav-update-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="margin-bottom:4px;">✏️ Update Pool NAV</h2>
+    <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">Daily NAV update — this will be logged immutably</p>
+    <div class="input-group">
+      <label class="input-label">New NAV per Unit (KES)</label>
+      <input class="input" type="number" step="0.01" placeholder="e.g. 101.45" id="new-nav-value">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Total Pool Value (KES)</label>
+      <input class="input" type="number" placeholder="e.g. 4860000" id="new-pool-value">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Admin Notes</label>
+      <input class="input" type="text" placeholder="e.g. Monthly rebalancing done">
+    </div>
+    <button class="btn btn-gold" onclick="updateNAV()">📊 Publish NAV Update</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('nav-update-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- CREATE POOL MODAL (Admin) -->
+<div class="modal-overlay" id="create-pool-modal" onclick="closeModalOnBg(event,'create-pool-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="margin-bottom:16px;">⚓ Create New Pool</h2>
+    <div class="input-group">
+      <label class="input-label">Pool Name</label>
+      <input class="input" type="text" placeholder="e.g. Msitu Growth Fund">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Pool Type</label>
+      <select class="input">
+        <option>Growth</option><option>Stable</option><option>Balanced</option><option>Fixed Income</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Initial NAV (KES/Unit)</label>
+      <input class="input" type="number" placeholder="100.00" value="100.00">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Description</label>
+      <input class="input" type="text" placeholder="Brief description of investment strategy">
+    </div>
+    <button class="btn btn-gold" onclick="createPool()">✅ Launch Pool</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('create-pool-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- RISK MODAL -->
+<div class="modal-overlay" id="risk-modal" onclick="closeModalOnBg(event,'risk-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="margin-bottom:12px;">⚠️ Risk Disclosures</h2>
+    <div style="font-size:13px; line-height:1.8; color:var(--text-secondary); margin-bottom:16px;">
+      <strong style="color:var(--gold);">Accepted on:</strong> January 15, 2025<br><br>
+      You have acknowledged that:<br>
+      • Investments carry capital risk<br>
+      • Past returns do not guarantee future performance<br>
+      • NAV may fluctuate daily<br>
+      • Golden Compass operates in CMA-licensed structure<br>
+      • Funds held in segregated custody accounts<br>
+      • Exit fees may apply within holding period
+    </div>
+    <button class="btn btn-outline" onclick="closeModal('risk-modal')">Close</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">Transaction Processing...</div>
+
+</div><!-- end #app -->
+
+<script>
+// ============================
+// APP STATE
+// ============================
+const state = {
+  currentUser: null,
+  isAdmin: false,
+  currentScreen: 'auth',
+  previousScreen: null,
+  poolData: {
+    bahari: { name: 'Bahari Growth Fund', nav: 101.28, total: 4860000, units: 48000, investors: 1204, type: 'Growth', return: 12.4, emoji: '🌊' },
+    pwani: { name: 'Pwani Stable Fund', nav: 98.12, total: 2059200, units: 21000, investors: 784, type: 'Stable', return: 6.2, emoji: '⚓' },
+    kilima: { name: 'Kilima Balanced Fund', nav: 104.55, total: 6300000, units: 60000, investors: 2441, type: 'Balanced', return: 9.1, emoji: '⛵' }
+  },
+  transactions: [
+    { id: 'PBK8234JH', type: 'deposit', amount: 5000, pool: 'Wallet', date: '2026-02-27', status: 'confirmed', mpesa: 'SI7234KLA' },
+    { id: 'PBK7892KJ', type: 'deposit', amount: 10000, pool: 'Bahari Growth', date: '2026-02-26', status: 'confirmed', mpesa: 'SI6891LKA' },
+    { id: 'PBK7112KA', type: 'withdrawal', amount: 2500, pool: 'Pwani Stable', date: '2026-02-22', status: 'confirmed', mpesa: 'SI5734JKA' },
+    { id: 'PBK6881XA', type: 'deposit', amount: 20000, pool: 'Kilima Balanced', date: '2026-02-15', status: 'confirmed', mpesa: 'SI4521LKA' },
+    { id: 'PBK5421KA', type: 'withdrawal', amount: 8000, pool: 'Bahari Growth', date: '2026-02-10', status: 'confirmed', mpesa: 'SI3398JKA' },
+    { id: 'PBK4122XA', type: 'deposit', amount: 50000, pool: 'Bahari Growth', date: '2026-01-30', status: 'confirmed', mpesa: 'SI2156LKA' },
+    { id: 'PBK3009KA', type: 'deposit', amount: 30000, pool: 'Pwani Stable', date: '2026-01-15', status: 'confirmed', mpesa: 'SI1022JKA' },
+  ],
+  auditLog: [
+    { action: 'NAV_UPDATE', entity: 'Bahari Growth', actor: 'admin', time: '6:00 AM today' },
+    { action: 'KYC_APPROVED', entity: 'User #4429', actor: 'compliance', time: '8:32 AM today' },
+    { action: 'NAV_UPDATE', entity: 'Pwani Stable', actor: 'admin', time: '6:00 AM today' },
+    { action: 'POOL_CREATED', entity: 'Kilima Balanced', actor: 'admin', time: 'Feb 20, 2026' },
+    { action: 'AML_FLAGGED', entity: 'TXN #PBK9921XK', actor: 'system', time: 'Yesterday' },
+  ],
+  currentPoolModal: null,
+  chatMessages: [],
+  navChartData: {
+    bahari: [95, 96, 97, 98.5, 99.8, 100.5, 101.28],
+    pwani: [93, 94, 95, 96, 97, 97.5, 98.12],
+    kilima: [98, 99, 101, 102, 103, 104, 104.55]
+  },
+  aumData: [11.2, 11.5, 11.8, 12.0, 12.4, 12.9, 13.2]
+};
+
+// ============================
+// AI RESPONSES
+// ============================
+const aiResponses = {
+  portfolio: `Your portfolio is performing admirably, Captain! 📊\n\nTotal value: **KSh 124,850** (+12.4% YTD)\n\n• Bahari Growth Fund: 752 units → KSh 76,192 (+8.9%)\n• Pwani Stable Fund: 496 units → KSh 48,658 (+4.2%)\n\nYour portfolio is well-diversified with a 62/38 split between growth and stable assets. This gives you solid growth potential while maintaining safety. Well navigated!`,
+  nav: `Excellent question! Here's how NAV works:\n\n📐 **NAV Formula:**\nNAV per Unit = Total Pool Value ÷ Total Units Issued\n\nExample: If Bahari Growth has KSh 4,860,000 in assets and 48,000 units outstanding:\nNAV = 4,860,000 ÷ 48,000 = **KSh 101.25/unit**\n\nThis is calculated and published every day at 6:00 AM EAT. All history is immutably recorded — your treasure map is always accurate! 🗺️`,
+  fund: `Based on your profile (moderate risk), here's my recommendation:\n\n⭐ **Best Match: Kilima Balanced Fund**\n• 9.1% YTD return\n• Balanced growth/stability mix\n• 2,441 investors (most popular)\n\n🌊 If you want higher growth (higher risk): Bahari Growth Fund (+12.4% YTD)\n\n⚓ If you prefer safety: Pwani Stable Fund (+6.2% YTD)\n\nWould you like me to calculate projected returns for a specific investment amount?`,
+  risk: `Risk assessment for your voyage, Captain:\n\n⚠️ **Market Risk:** Pool NAVs can fluctuate with market conditions\n📉 **Capital Risk:** You may receive less than invested\n🔒 **Custody:** Funds held in segregated CMA-licensed accounts\n💰 **Liquidity Risk:** Exit fees apply within 30 days\n🏛️ **Regulatory:** We're CBK & CMA compliant\n\nYour current risk score: **Moderate** — suitable for the Kilima Balanced and Bahari Growth funds. Navigate wisely! 🧭`,
+  mpesa: `Depositing via M-Pesa is simple! Here's the voyage map:\n\n1. Tap **Deposit** → Enter amount\n2. We send an **STK Push** to your phone\n3. Enter your M-Pesa PIN to confirm\n4. Funds appear in **~30 seconds**\n5. Units are auto-allocated at today's NAV\n\nMinimum: KSh 1,000 per transaction\nNo deposit fees — only M-Pesa standard charges apply. ⚡`,
+  default: `Ahoy! I'm your Golden Compass Navigator. I can help with:\n\n• 📊 Portfolio analysis & performance\n• ⚓ Pool recommendations\n• 💰 Deposit & withdrawal guidance\n• 📐 NAV & yield explanations\n• ⚠️ Risk assessments\n• 🏛️ KYC & compliance questions\n\nWhat aspect of your wealth voyage can I guide you through?`
+};
+
+function getAIResponse(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('portfolio') || m.includes('performing') || m.includes('return')) return aiResponses.portfolio;
+  if (m.includes('nav') || m.includes('net asset') || m.includes('calculation') || m.includes('works')) return aiResponses.nav;
+  if (m.includes('fund') || m.includes('invest') || m.includes('which') || m.includes('recommend')) return aiResponses.fund;
+  if (m.includes('risk') || m.includes('safe') || m.includes('loss')) return aiResponses.risk;
+  if (m.includes('mpesa') || m.includes('m-pesa') || m.includes('deposit') || m.includes('withdraw')) return aiResponses.mpesa;
+  return aiResponses.default;
+}
+
+// ============================
+// CLOCK
+// ============================
+function updateClock() {
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  document.querySelectorAll('#clock, #clock2').forEach(el => el && (el.textContent = t));
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================
+// SPLASH
+// ============================
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
+  }, 2500);
+});
+
+// ============================
+// AUTH
+// ============================
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  ['login-form','register-form','admin-form'].forEach(f => document.getElementById(f).style.display = 'none');
+  if (tab === 'login') {
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    document.getElementById('login-form').style.display = 'block';
+  } else if (tab === 'register') {
+    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+    document.getElementById('register-form').style.display = 'block';
+  } else if (tab === 'admin') {
+    document.getElementById('admin-form').style.display = 'block';
+  }
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  if (!email || !pass) { showToast('⚠️ Enter email and password'); return; }
+  state.currentUser = { name: 'James Mwangi', email, avatar: 'JM', role: 'investor' };
+  state.isAdmin = false;
+  showToast('⚓ Welcome aboard, Captain!');
+  setTimeout(() => {
+    showScreen('screen-home');
+    buildCharts();
+    buildTransactionList('all');
+    buildAuditLog();
+  }, 600);
+}
+
+function doRegister() {
+  const name = document.getElementById('reg-name').value;
+  const email = document.getElementById('reg-email').value;
+  const phone = document.getElementById('reg-phone').value;
+  if (!name || !email || !phone) { showToast('⚠️ Fill all fields'); return; }
+  state.currentUser = { name, email, avatar: name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2), role: 'investor' };
+  document.getElementById('user-name-display').textContent = name.split(' ')[0] + ' ' + name.split(' ')[1]?.charAt(0) + '.';
+  document.getElementById('user-avatar').textContent = state.currentUser.avatar;
+  showToast('✅ Account created! Complete KYC to start investing.');
+  setTimeout(() => {
+    showScreen('screen-home');
+    buildCharts();
+    buildTransactionList('all');
+    setTimeout(() => showScreen('screen-kyc'), 1000);
+  }, 600);
+}
+
+function doAdminLogin() {
+  state.currentUser = { name: 'Admin', email: 'admin@compass.co.ke', role: 'admin' };
+  state.isAdmin = true;
+  showToast('🔐 Admin access granted');
+  setTimeout(() => {
+    showScreen('screen-admin');
+    buildAdminChart();
+    buildAuditLog();
+  }, 600);
+}
+
+function doLogout() {
+  state.currentUser = null;
+  state.isAdmin = false;
+  showToast('⚓ Anchored safely. Come back soon!');
+  setTimeout(() => showScreen('screen-auth'), 600);
+}
+
+// ============================
+// SCREEN NAVIGATION
+// ============================
+function showScreen(screenId) {
+  state.previousScreen = state.currentScreen;
+  state.currentScreen = screenId;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId)?.classList.add('active');
+}
+
+function showNavScreen(tab) {
+  const map = { home: 'screen-home', pools: 'screen-pools', ai: 'screen-ai', transactions: 'screen-transactions', profile: 'screen-profile' };
+  showScreen(map[tab]);
+  if (tab === 'pools') buildPoolChart('bahari');
+  if (tab === 'transactions') buildTransactionList('all');
+  if (tab === 'ai' && document.querySelectorAll('#chat-messages .message').length < 2) {
+    // already has welcome message
+  }
+}
+
+function goBack() {
+  if (state.previousScreen) showScreen(state.previousScreen);
+  else showScreen('screen-home');
+}
+
+// ============================
+// MODALS
+// ============================
+function openModal(id, data) {
+  if (id === 'invest-modal' && data) {
+    state.currentPoolModal = data;
+    const pool = state.poolData[data];
+    document.getElementById('invest-modal-title').textContent = pool.emoji + ' Invest in ' + pool.name;
+    document.getElementById('invest-amount').oninput = function() {
+      const amt = parseFloat(this.value);
+      if (amt >= 100) {
+        const units = (amt / pool.nav).toFixed(4);
+        document.getElementById('units-preview').textContent = units + ' units';
+        document.getElementById('nav-preview').textContent = 'KSh ' + pool.nav;
+        document.getElementById('invest-preview').style.display = 'block';
+      } else {
+        document.getElementById('invest-preview').style.display = 'none';
+      }
+    };
+  }
+  if (id === 'pool-detail-modal' && data) {
+    state.currentPoolModal = data;
+    const pool = state.poolData[data];
+    const navData = state.navChartData[data];
+    const change = ((pool.nav - navData[0]) / navData[0] * 100).toFixed(2);
+    document.getElementById('pool-detail-content').innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <span style="font-size:32px;">${pool.emoji}</span>
+        <div><h2 style="margin:0;">${pool.name}</h2><span class="tag">${pool.type}</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div class="stat-card"><div class="label" style="font-size:9px;margin-bottom:4px;">NAV/Unit</div><div style="font-family:'Space Mono',monospace;font-size:18px;color:var(--gold-light);">KSh ${pool.nav}</div></div>
+        <div class="stat-card"><div class="label" style="font-size:9px;margin-bottom:4px;">7-Day Change</div><div style="font-family:'Space Mono',monospace;font-size:18px;color:var(--success);">+${change}%</div></div>
+        <div class="stat-card"><div class="label" style="font-size:9px;margin-bottom:4px;">Pool Size</div><div style="font-family:'Space Mono',monospace;font-size:14px;">KSh ${(pool.total/1000000).toFixed(1)}M</div></div>
+        <div class="stat-card"><div class="label" style="font-size:9px;margin-bottom:4px;">Investors</div><div style="font-family:'Space Mono',monospace;font-size:14px;">${pool.investors.toLocaleString()}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;">
+        This pool maintains an immutable NAV history and is audited monthly. All transactions are logged and CMA-compliant. Minimum investment: KSh 1,000.
+      </div>
+    `;
+  }
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function closeModalOnBg(event, id) {
+  if (event.target === document.getElementById(id)) closeModal(id);
+}
+
+function investFromDetail() {
+  closeModal('pool-detail-modal');
+  openModal('invest-modal', state.currentPoolModal);
+}
+
+// ============================
+// FINANCIAL OPERATIONS
+// ============================
+function processDeposit() {
+  const amount = document.getElementById('deposit-amount').value;
+  if (!amount || amount < 1000) { showToast('⚠️ Minimum deposit is KSh 1,000'); return; }
+  closeModal('deposit-modal');
+  showToast('📱 STK Push sent to your phone...');
+  setTimeout(() => {
+    const ref = 'PBK' + Math.floor(Math.random()*9000+1000) + 'XA';
+    state.transactions.unshift({ id: ref, type: 'deposit', amount: parseInt(amount), pool: document.getElementById('deposit-pool').options[document.getElementById('deposit-pool').selectedIndex].text, date: new Date().toISOString().split('T')[0], status: 'confirmed', mpesa: 'SI' + Math.floor(Math.random()*9000+1000) });
+    state.auditLog.unshift({ action: 'DEPOSIT_CONFIRMED', entity: 'KSh ' + parseInt(amount).toLocaleString(), actor: 'system', time: 'Just now' });
+    showToast('✅ KSh ' + parseInt(amount).toLocaleString() + ' deposited successfully!');
+    buildTransactionList('all');
+    buildAuditLog();
+    document.getElementById('deposit-amount').value = '';
+  }, 3000);
+}
+
+function processWithdrawal() {
+  const amount = document.getElementById('withdraw-amount').value;
+  if (!amount || amount < 1000) { showToast('⚠️ Minimum withdrawal is KSh 1,000'); return; }
+  closeModal('withdraw-modal');
+  const ref = 'PBK' + Math.floor(Math.random()*9000+1000) + 'WA';
+  state.transactions.unshift({ id: ref, type: 'withdrawal', amount: parseInt(amount), pool: 'Bahari Growth', date: new Date().toISOString().split('T')[0], status: 'confirmed', mpesa: 'SI' + Math.floor(Math.random()*9000+1000) });
+  showToast('✅ Withdrawal of KSh ' + parseInt(amount).toLocaleString() + ' requested');
+  buildTransactionList('all');
+}
+
+function processInvestment() {
+  const amount = document.getElementById('invest-amount').value;
+  if (!amount || amount < 1000) { showToast('⚠️ Minimum investment is KSh 1,000'); return; }
+  const pool = state.poolData[state.currentPoolModal];
+  const units = (amount / pool.nav).toFixed(4);
+  closeModal('invest-modal');
+  state.transactions.unshift({ id: 'PBK' + Math.floor(Math.random()*9000+1000) + 'IA', type: 'deposit', amount: parseInt(amount), pool: pool.name, date: new Date().toISOString().split('T')[0], status: 'confirmed', mpesa: 'SI' + Math.floor(Math.random()*9000+1000) });
+  showToast(`✅ Invested KSh ${parseInt(amount).toLocaleString()} → ${units} units in ${pool.name}`);
+  buildTransactionList('all');
+}
+
+function updateNAV() {
+  const val = document.getElementById('new-nav-value').value;
+  if (!val) { showToast('⚠️ Enter new NAV value'); return; }
+  closeModal('nav-update-modal');
+  state.auditLog.unshift({ action: 'NAV_UPDATE', entity: 'Pool · NAV: KSh ' + val, actor: 'admin', time: 'Just now' });
+  showToast('📊 NAV updated to KSh ' + val + ' — logged immutably');
+  buildAuditLog();
+}
+
+function createPool() {
+  closeModal('create-pool-modal');
+  showToast('⚓ New pool launched and logged!');
+  state.auditLog.unshift({ action: 'POOL_CREATED', entity: 'New Pool', actor: 'admin', time: 'Just now' });
+  buildAuditLog();
+}
+
+function kycAction(action) {
+  showToast(action === 'approve' ? '✅ KYC Application Approved' : '❌ KYC Application Rejected');
+  state.auditLog.unshift({ action: action === 'approve' ? 'KYC_APPROVED' : 'KYC_REJECTED', entity: 'User Application', actor: 'admin', time: 'Just now' });
+  buildAuditLog();
+}
+
+// ============================
+// KYC FLOW
+// ============================
+let kycCurrentStep = 1;
+function kycNext(step) {
+  document.getElementById('kyc-step-' + kycCurrentStep).style.display = 'none';
+  document.getElementById('kyc-step-' + step).style.display = 'block';
+  kycCurrentStep = step;
+  const dots = document.querySelectorAll('.step-dot');
+  dots.forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i < step - 1) d.classList.add('done');
+    else if (i === step - 1) d.classList.add('active');
+  });
+}
+
+function submitKYC() {
+  if (!document.getElementById('risk-consent').checked) { showToast('⚠️ Please accept the risk disclosure'); return; }
+  showToast('✅ KYC submitted! Under review within 24h');
+  state.auditLog.unshift({ action: 'KYC_SUBMITTED', entity: 'User Application', actor: state.currentUser?.name || 'user', time: 'Just now' });
+  setTimeout(() => {
+    goBack();
+    kycCurrentStep = 1;
+    kycNext(1);
+  }, 1000);
+}
+
+// ============================
+// CHARTS
+// ============================
+function buildCharts() {
+  buildHomeChart();
+  buildPoolChart('bahari');
+}
+
+function buildHomeChart() {
+  const data = [45, 55, 62, 58, 70, 75, 80];
+  const container = document.getElementById('home-chart');
+  if (!container) return;
+  const max = Math.max(...data);
+  container.innerHTML = data.map((v, i) => 
+    `<div class="chart-bar" style="height:${(v/max*100)}%; animation-delay:${i*0.1}s;"></div>`
+  ).join('');
+}
+
+function buildPoolChart(poolKey) {
+  const data = state.navChartData[poolKey];
+  const container = document.getElementById('pool-chart');
+  if (!container) return;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const isTeal = poolKey === 'pwani';
+  container.innerHTML = data.map((v, i) =>
+    `<div class="chart-bar ${isTeal ? 'teal' : ''}" style="height:${20 + ((v-min)/range*80)}%;"></div>`
+  ).join('');
+}
+
+function switchPoolChart(key) { buildPoolChart(key); }
+
+function buildAdminChart() {
+  const data = state.aumData;
+  const container = document.getElementById('admin-chart');
+  if (!container) return;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  container.innerHTML = data.map((v, i) =>
+    `<div class="chart-bar" style="height:${20 + ((v-min)/range*80)}%;"></div>`
+  ).join('');
+}
+
+// ============================
+// TRANSACTIONS
+// ============================
+function buildTransactionList(filter) {
+  const container = document.getElementById('tx-list');
+  if (!container) return;
+  const filtered = filter === 'all' ? state.transactions : state.transactions.filter(t => t.type === filter);
+  container.innerHTML = filtered.map((t, i) => `
+    <div class="tx-item" style="${i === filtered.length-1 ? 'border-bottom:none;' : ''}">
+      <div class="tx-icon ${t.type === 'deposit' ? 'tx-in' : 'tx-out'}">${t.type === 'deposit' ? '💚' : '🔴'}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;">${t.type === 'deposit' ? 'Deposit · ' : 'Withdrawal · '}${t.pool}</div>
+        <div class="label" style="font-size:9px;">${t.id} · ${t.date}</div>
+        <div class="label" style="font-size:9px; color:var(--text-muted);">M-Pesa Ref: ${t.mpesa}</div>
+      </div>
+      <div>
+        <div style="font-family:'Space Mono',monospace; color:${t.type==='deposit'?'var(--success)':'var(--danger)'}; text-align:right;">${t.type==='deposit'?'+':'-'}${parseInt(t.amount).toLocaleString()}</div>
+        <span class="tag-success tag" style="font-size:8px;">${t.status}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterTx(type) { buildTransactionList(type); }
+
+// ============================
+// AUDIT LOG
+// ============================
+function buildAuditLog() {
+  const container = document.getElementById('audit-log-list');
+  if (!container) return;
+  const actionColors = { NAV_UPDATE: 'var(--gold)', KYC_APPROVED: 'var(--success)', KYC_REJECTED: 'var(--danger)', KYC_SUBMITTED: 'var(--teal)', POOL_CREATED: 'var(--gold-light)', DEPOSIT_CONFIRMED: 'var(--success)', AML_FLAGGED: 'var(--danger)' };
+  container.innerHTML = state.auditLog.slice(0, 8).map((log, i) => `
+    <div style="display:flex; gap:10px; padding:8px 0; ${i < Math.min(state.auditLog.length,8)-1 ? 'border-bottom:1px solid rgba(201,168,76,0.08);' : ''}">
+      <div style="width:8px; height:8px; border-radius:4px; background:${actionColors[log.action]||'var(--text-muted)'}; margin-top:5px; flex-shrink:0;"></div>
+      <div style="flex:1">
+        <div style="font-family:'Space Mono',monospace; font-size:11px; color:${actionColors[log.action]||'var(--text-muted)'};">${log.action}</div>
+        <div style="font-size:13px; color:var(--text-secondary);">${log.entity}</div>
+        <div class="label" style="font-size:9px;">by ${log.actor} · ${log.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================
+// SETTINGS TOGGLES
+// ============================
+function toggleNotif() {
+  const t = document.getElementById('notif-toggle');
+  t.classList.toggle('on');
+  showToast(t.classList.contains('on') ? '🔔 Notifications enabled' : '🔕 Notifications disabled');
+}
+function toggle2FA() {
+  const t = document.getElementById('twofa-toggle');
+  t.classList.toggle('on');
+  showToast(t.classList.contains('on') ? '🔐 2FA enabled' : '🔓 2FA disabled');
+}
+
+// ============================
+// AI CHAT
+// ============================
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  addMessage('user', msg);
+  input.value = '';
+  const thinking = addThinking();
+  const delay = 800 + Math.random() * 800;
+  setTimeout(() => {
+    thinking.remove();
+    addMessage('ai', getAIResponse(msg));
+  }, delay);
+}
+
+function sendQuickMsg(msg) {
+  document.getElementById('chat-input').value = msg;
+  sendChat();
+}
+
+function addMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  if (role === 'ai') {
+    div.innerHTML = `<div class="ai-label">🧭 Navigator</div>${text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}`;
+  } else {
+    div.textContent = text;
+  }
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function addThinking() {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.innerHTML = `<div class="ai-label">🧭 Navigator</div><div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// ============================
+// TOAST
+// ============================
+let toastTimeout;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ============================
+// INIT
+// ============================
+buildTransactionList('all');
+buildAuditLog();
+</script>
+</body>
+</html>
