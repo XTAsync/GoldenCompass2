@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="GoldenCompass2 logo" width="180" />
+</p>
+
 # Golden Compass — Mobile Interface
 
 A standalone HTML prototype exploring a mobile investment-app experience, including portfolio-style screens, navigation, and a dark gold-and-navy visual design.
